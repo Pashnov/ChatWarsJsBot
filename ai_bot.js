@@ -115,10 +115,13 @@ function getTimeToNexBigFight() {
     var current = new Date();
     var hour = current.getHours();
     var minute = current.getMinutes();
+    if(hour >= 8){
+        return _1hour;
+    }
     for(var i = 0; (i < hours.length - 1); i++){
         if(hour >= hours[i] && hours[i+1] > hour){
             var difHour = hours[i+1] - hour - 1;
-            var difMinute = 52 - minute;
+            var difMinute = 56 - minute;
             return (difHour * 60 + difMinute ) * 60 * 1000;
         }
     }
