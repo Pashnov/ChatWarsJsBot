@@ -16,6 +16,8 @@ var lastMessageTextMustntBeCounted = 'Хороший план, посмотри�
 var lastMessageTextMustntBeCounted1 = 'Слишком долго! Выбор сделан автоматически. ¯\\_(ツ)_/¯';
 var lastPartNot_1 = 'Слишком долго';
 var lastPartNot_2 = 'тычет копьем';
+var goodQuestResponse = 'Ты отправился искать приключения в лес. Вернешься через 5 минут.';
+var lowStamina = 'Слишком мало единиц выносливости';
 
 var textDefence = '🛡 Защита';
 var textRedFlag = '🇮🇲';
@@ -24,8 +26,12 @@ var textArena = ':postal_horn:Арена';
 var textSearchingOpponent = ':mag_right:Поиск соперника';
 var textCancelSearching = ':heavy_multiplication_x:Отменить поиск';
 var textBack = ':arrow_left:Назад';
+var textQuests = '🗺 Квесты';
+var textForest = ':evergreen_tree:Лес';
+var textCave = '🕸Пещера';
 
 var btnsAtcDef = ['🗡в голову', '🗡по ногам', '🗡по ногам', '🛡головы', '🛡корпуса', '🛡ног'];
+var quests = [textForest, textCave, textForest];
 
 var _1sec =        1000;
 var _2sec =        2000;
@@ -34,6 +40,9 @@ var _5sec =      5*1000;
 var _10sec =    10*1000;
 var _20sec =    20*1000;
 var _30sec =    30*1000;
+var _2min  =  2*60*1000;
+var _5min  =  5*60*1000;
+var _9min  =  9*60*1000;
 var _1hour = 60*60*1000;
 
 // constants
@@ -44,6 +53,8 @@ var hours =  [0, 4, 8, 12, 16, 20];
 
 var minuteBefore = 10;
 var minuteAfter = 6;
+
+var questStatus = {_0:false,_4:false,_8:false,_12:false,_16:false,_20:false};
 
 var isLog = false;
 
@@ -127,7 +138,7 @@ function getTimeToNexBigFight() {
     }
     if(hour >= 20){
         var difHour = 24 - hour - 1;
-        var difMinute = 52 - minute;
+        var difMinute = 56 - minute;
         return (difHour * 60 + difMinute ) * 60 * 1000;
     }
     return _30sec;
@@ -200,6 +211,68 @@ function checkAndClickBtn(btn, text) {
     }
 }
 
+function getQuestStatus() {
+    var current = new Date();
+    var hour = current.getHours();
+    if(hour >= 20){
+        if(!questStatus._20){
+            return false;
+            questStatus._20 = true;
+        } else {
+            return true;
+        }
+    } else if(hour >= 16){
+        if(!questStatus._16){
+            return false;
+            questStatus._16 = true;
+        } else {
+            return true;
+        }
+    } else if(hour >= 12){
+        if(!questStatus._12){
+            return false;
+            questStatus._12 = true;
+        } else {
+            return true;
+        }
+    } else if(hour >= 8){
+        if(!questStatus._8){
+            return false;
+            questStatus._8 = true;
+        } else {
+            return true;
+        }
+    } else if(hour >= 4){
+        if(!questStatus._4){
+            return false;
+            questStatus._4 = true;
+        } else {
+            return true;
+        }
+    } else if(hour >= 0){
+        if(questStatus._20 == true){
+            questStatus._0 = false;
+            questStatus._4 = false;
+            questStatus._8 = false;
+            questStatus._12 = false;
+            questStatus._16 = false;
+            questStatus._20 = false;
+        }
+        if(!questStatus._0){
+            return false;
+        } else {
+            questStatus._0 = true;
+            return true;
+        }
+    }
+}
+
+function getLastChatWarsMsg() {
+    var base = $(lastMessageAuthorSelector).last().parent().parent().parent();
+    var text = base.find(lastMessageTextSelector)[0].innerText;
+    return text;
+}
+
 var work = true;
 
 async function main(toNextFight) {
@@ -233,6 +306,47 @@ async function main(toNextFight) {
 
             if(!isArenaWorking()){
                 var timeToNextBigFight = getTimeToNexBigFight();
+                if(timeToNextBigFight < _2min){
+                    var time = getSleepTimeDuringBigFight();
+                    await sleep(time, true);
+                }
+                //todo:: the first cut in point
+                var wasQuest = getQuestStatus();
+                if(!wasQuest){ // ### quest))) ###
+                    // #1 forest, #2 cave, #3 again forest
+                    for(var q = 0; q < quests.length; q++){
+                        var btnQuests = findBtnByText(getCurrentButtons(), textQuests);
+                        checkAndClickBtn(btnQuests, 'quests button');
+                        await sleep(_20sec, true);
+
+                        var btnQuest = findBtnByText(getCurrentButtons(), quests[q]);
+                        checkAndClickBtn(btnQuest, 'quest['+ quests[q]+'] button');
+                        await sleep(_20sec, true);
+                        var lastMsg = getLastChatWarsMsg();
+                        if(lastMsg == goodQuestResponse){
+                            // everything is right, went in forest
+                        } else if(lastMsg == lowStamina) {
+                            q = quests.length;
+                            continue;
+                        } else {
+                            // must resolve captcha
+                            var btnCaptchaText = solveCaptcha(lastMsg);
+                            if (btnCaptchaText){
+                                // able to resolve captcha
+                                var btnCaptcha = findBtnByText(getCurrentButtons(), btnCaptchaText);
+                                checkAndClickBtn(btnCaptcha, 'captcha['+ btnCaptchaText +'] button');
+                                await sleep(_20sec, true);
+                                lastMsg = getLastChatWarsMsg();
+                                while (lastMsg != goodQuestResponse){
+                                    await sleep(_2min, true);
+                                }
+                            }
+                        }
+                        await sleep(_9min, true);
+                    }
+
+                }
+
                 await sleep(timeToNextBigFight, true);
                 continue mainLoop;
             }
