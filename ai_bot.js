@@ -250,7 +250,7 @@ function getQuestStatus() {
             return true;
         }
     } else if(hour >= 0){
-        if(questStatus._20 == true){
+        if(questStatus._20  || questStatus._16 || questStatus._12 || questStatus._8 || questStatus._4){
             questStatus._0 = false;
             questStatus._4 = false;
             questStatus._8 = false;
@@ -346,7 +346,7 @@ async function main(toNextFight) {
                     }
 
                 }
-
+                timeToNextBigFight = getTimeToNexBigFight();
                 await sleep(timeToNextBigFight, true);
                 continue mainLoop;
             }
