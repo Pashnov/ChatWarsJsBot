@@ -17,6 +17,7 @@ var lastMessageTextMustntBeCounted1 = 'Слишком долго! Выбор с�
 var lastPartNot_1 = 'Слишком долго';
 var lastPartNot_2 = 'тычет копьем';
 var goodQuestResponse = 'Ты отправился искать приключения в лес. Вернешься через 5 минут.';
+var goodQuestResponseShort = 'Ты отправился';
 var lowStamina = 'Слишком мало единиц выносливости';
 
 var textDefence = '🛡 Защита';
@@ -106,8 +107,8 @@ function isFightInner(arr) {
 
 function isBigFightTime() {
     var current = new Date();
-    var hour = current.getHours();
-    var minute = current.getMinutes();
+    var hour = Number(current.getHours());
+    var minute = Number(current.getMinutes());
     for(var i = 0; i < hours.length; i++){
         if(hours[i] == hour){
             if(minute <= minuteAfter){
@@ -124,8 +125,8 @@ function isBigFightTime() {
 
 function getTimeToNexBigFight() {
     var current = new Date();
-    var hour = current.getHours();
-    var minute = current.getMinutes();
+    var hour = Number(current.getHours());
+    var minute = Number(current.getMinutes());
     if(hour >= 8){
         return _1hour;
     }
@@ -146,13 +147,13 @@ function getTimeToNexBigFight() {
 
 function isArenaWorking() {
     var current = new Date();
-    var hour = current.getHours();
+    var hour = Number(current.getHours());
     // var minute = current.getMinutes();
     return hour >= 9;
 }
 
 function getSleepTimeDuringBigFight() {
-    var currentMinute = new Date().getMinutes();
+    var currentMinute = Number(new Date().getMinutes());
     if(currentMinute > 50){
         return ((60 - currentMinute) + minuteAfter ) * 60 * 1000;
     } else {
@@ -337,8 +338,10 @@ async function main(toNextFight) {
                                 checkAndClickBtn(btnCaptcha, 'captcha['+ btnCaptchaText +'] button');
                                 await sleep(_20sec, true);
                                 lastMsg = getLastChatWarsMsg();
-                                while (lastMsg != goodQuestResponse){
+                                // while (lastMsg != goodQuestResponse){
+                                while (!lastMsg.includes(goodQuestResponseShort)){
                                     await sleep(_2min, true);
+                                    lastMsg = getLastChatWarsMsg();
                                 }
                             }
                         }
