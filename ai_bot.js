@@ -58,7 +58,7 @@ var minuteAfter = 6;
 
 var questStatus = {_0:false,_4:false,_8:false,_12:false,_16:false,_20:false};
 
-var isLog = false;
+var isLog = true;
 var ally = '🇪🇺' ; // if don't have ally -> ally = undefined
 
 function getRandomButton(arr){
