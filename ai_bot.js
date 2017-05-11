@@ -41,6 +41,7 @@ var _5sec =      5*1000;
 var _10sec =    10*1000;
 var _20sec =    20*1000;
 var _30sec =    30*1000;
+var _1min  =  1*60*1000;
 var _2min  =  2*60*1000;
 var _5min  =  5*60*1000;
 var _9min  =  9*60*1000;
@@ -58,19 +59,46 @@ var minuteAfter = 6;
 var questStatus = {_0:false,_4:false,_8:false,_12:false,_16:false,_20:false};
 
 var isLog = false;
+var ally = '🇪🇺' ; // if don't have ally -> ally = undefined
 
 function getRandomButton(arr){
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function sleep(ms, isLog) {
+async function sleep(ms, isLog) {
     if(isLog) {
         var time = ms / 1000 > 60 ? (ms / (60 * 1000)) + " minutes" : (ms / 1000) + " seconds";
         var current = new Date();
         var currentTime = current.getHours() + ':' + current.getMinutes() + ':' + current.getSeconds();
         log(currentTime + '    going to sleep for ' + time);
     }
+    if(ms > _2min){
+        var iterationAmount = ms/_1min;
+        var remainder = ms%_1min;
+        for(var i = 0; i < iterationAmount; i++){
+            checkGoAndAct();
+            await sleepInner(_1min);
+        }
+        await sleepInner(remainder);
+    } else {
+        await sleepInner(ms);
+    }
+}
+
+function sleepInner(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function checkGoAndAct() {
+    var base = $(lastMessageAuthorSelector).last().parent().parent().parent();
+    var text = base.find(lastMessageTextSelector);
+    var textMsg = text[0].innerText;
+    if(ally && textMsg.includes(ally)){
+        // do nothing
+    } else {
+        var a = text.find('a');
+        a[0].click();
+    }
 }
 
 function findBtnByText(arr, text){
