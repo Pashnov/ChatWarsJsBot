@@ -97,7 +97,8 @@ function checkGoAndAct() {
         // do nothing
     } else {
         var a = text.find('a');
-        if(a.length > 0) {
+        if(a.length > 0 && textMsg.includes('go')) {
+            log("enemy of caravan found and will be destroyed");
             a[0].click();
         }
     }
