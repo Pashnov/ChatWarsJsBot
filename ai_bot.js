@@ -97,7 +97,9 @@ function checkGoAndAct() {
         // do nothing
     } else {
         var a = text.find('a');
-        a[0].click();
+        if(a.length > 0) {
+            a[0].click();
+        }
     }
 }
 
