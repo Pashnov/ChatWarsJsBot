@@ -556,7 +556,8 @@ async function main(toNextFight) {
             //################################################################################
 
         } catch(err) {
-            console.error(err.message);
+            // console.error(err.message);
+            console.error(err.stack || err.stacktrace);
             await sleep(_30sec, true);
 
         }
