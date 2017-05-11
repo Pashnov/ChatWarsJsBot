@@ -210,11 +210,32 @@ function getTimeLastChatWarsMsg() {
 }
 
 function isReachedLimitArena() {
-    var base = $(lastMessageAuthorSelector).last().parent().parent().parent();
-    var text = base.find(lastMessageTextSelector)[0].innerText;
-    var re = new RegExp('Поединков сегодня (\\d+) из (\\d+)');
-    var res = re.exec(text);
-    return !(Number(res[1]) < Number(res[2]));
+    var base;
+    var text = "";
+    var re;
+    var res;
+    try {
+        base = $(lastMessageAuthorSelector).last().parent().parent().parent();
+        text = base.find(lastMessageTextSelector)[0].innerText;
+        re = new RegExp('Поединков сегодня (\\d+) из (\\d+)');
+        res = re.exec(text);
+        return !(Number(res[1]) < Number(res[2]));
+    } catch (e){
+        log('isReachedLimitArena#text = ', text);
+        console.error(e.stack);
+        //double attempt
+        try {
+            base = $(lastMessageAuthorSelector).last().parent().parent().parent();
+            text = base.find(lastMessageTextSelector)[0].innerText;
+            re = new RegExp('Поединков сегодня (\\d+) из (\\d+)');
+            res = re.exec(text);
+            return !(Number(res[1]) < Number(res[2]));
+        } catch (e){
+            log('isReachedLimitArena#text2 = ', text);
+            console.error(e.stack);
+            return true;
+        }
+    }
 }
 
 function isWarningAboutNotEnoughMoneyForArena() {
