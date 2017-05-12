@@ -19,6 +19,7 @@ var lastPartNot_2 = 'тычет копьем';
 var goodQuestResponse = 'Ты отправился искать приключения в лес. Вернешься через 5 минут.';
 var goodQuestResponseShort = 'Ты отправился';
 var lowStamina = 'Слишком мало единиц выносливости';
+var searchingOpponent = 'Ищем соперника';
 
 var textDefence = '🛡 Защита';
 var textRedFlag = '🇮🇲';
@@ -233,6 +234,9 @@ function isReachedLimitArena() {
         } catch (e){
             log('isReachedLimitArena#text2 = ', text);
             console.error(e.stack);
+            if(text.includes(searchingOpponent)){
+                return false;
+            }
             return true;
         }
     }
@@ -489,29 +493,29 @@ async function main(toNextFight) {
             var wasFight = false;
 
             if(isFight(getCurrentButtons())) {
-                clickBtn(getCurrentButtons()[0]);
-                log('Clicked attack head');
-                await sleep(_3sec, true);
-
-                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                while (timeBotMsg == getTimeLastChatWarsMsg()){
-                    await sleep(_1sec, false);
-                }
-                timeBotMsg = getTimeLastChatWarsMsg();
-                await sleep(_2sec, false);
-
-                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-                clickBtn(getCurrentButtons()[2]);
-                log('Clicked protect feed');
-                await sleep(_5sec, true);
-
-                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                while (timeBotMsg == getTimeLastChatWarsMsg()){
-                    await sleep(_1sec, false);
-                }
-                timeBotMsg = getTimeLastChatWarsMsg();
-                await sleep(_2sec, false);
+                // clickBtn(getCurrentButtons()[0]);
+                // log('Clicked attack head');
+                // await sleep(_3sec, true);
+                //
+                // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                // while (timeBotMsg == getTimeLastChatWarsMsg()){
+                //     await sleep(_1sec, false);
+                // }
+                // timeBotMsg = getTimeLastChatWarsMsg();
+                // await sleep(_2sec, false);
+                //
+                // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                //
+                // clickBtn(getCurrentButtons()[2]);
+                // log('Clicked protect feed');
+                // await sleep(_5sec, true);
+                //
+                // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                // while (timeBotMsg == getTimeLastChatWarsMsg()){
+                //     await sleep(_1sec, false);
+                // }
+                // timeBotMsg = getTimeLastChatWarsMsg();
+                // await sleep(_2sec, false);
 
                 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 var i = 0;

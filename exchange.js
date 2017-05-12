@@ -3,7 +3,7 @@ var lastMessageAuthorSelector = 'span.im_message_author_wrap a';
 var lastMessageTextSelector = 'div.im_message_text';
 var link = 'a';
 
-var _30sec = 30*1000;
+var _30sec = 1000;
 
 function sleep(ms, isLog) {
     if(isLog) {
