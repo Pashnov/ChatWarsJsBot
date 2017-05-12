@@ -390,8 +390,7 @@ async function main(toNextFight) {
                                 checkAndClickBtn(btnCaptcha, 'captcha['+ btnCaptchaText +'] button');
                                 await sleep(_20sec, true);
                                 lastMsg = getLastChatWarsMsg();
-                                // while (lastMsg != goodQuestResponse){
-                                while (!lastMsg.includes(goodQuestResponseShort)){
+                                while (!(lastMsg.includes(goodQuestResponseShort) || lastMsg.includes(lowStamina))){
                                     await sleep(_2min, true);
                                     lastMsg = getLastChatWarsMsg();
                                 }
