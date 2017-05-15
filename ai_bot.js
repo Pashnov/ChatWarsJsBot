@@ -31,9 +31,11 @@ var textBack = ':arrow_left:Назад';
 var textQuests = '🗺 Квесты';
 var textForest = ':evergreen_tree:Лес';
 var textCave = '🕸Пещера';
+var textStealCaravans = ':camel:ГРАБИТЬ КОРОВАНЫ';
 
 var btnsAtcDef = ['🗡в голову', '🗡по ногам', '🗡по ногам', '🛡головы', '🛡корпуса', '🛡ног'];
-var quests = [textForest, textCave, textForest];
+var dayQuests = [textForest, textCave, textForest];
+var nightQuests = [textStealCaravans, textForest, textStealCaravans];
 
 var _1sec =        1000;
 var _2sec =        2000;
@@ -60,7 +62,8 @@ var minuteAfter = 6;
 var questStatus = {_0:false,_4:false,_8:false,_12:false,_16:false,_20:false};
 
 var isLog = true;
-var ally = '🇪🇺' ; // if don't have ally -> ally = undefined
+var ally = '🇰🇮' ; // if don't have ally -> ally = undefined
+var isDef = false;
 
 function getRandomButton(arr){
     return arr[Math.floor(Math.random() * arr.length)];
@@ -268,6 +271,13 @@ function checkAndClickBtn(btn, text) {
     }
 }
 
+function getQuest() {
+    if(!isArenaWorking() && isDef){
+        return nightQuests;
+    }
+    return dayQuests;
+}
+
 function getQuestStatus() {
     var current = new Date();
     var hour = current.getHours();
@@ -361,9 +371,10 @@ async function main(toNextFight) {
             await sleep(_20sec, true);
             //################################################################################
 
-            if(!isArenaWorking()){
+            // if(!isArenaWorking()){
+            if(true){
                 var timeToNextBigFight = getTimeToNexBigFight();
-                if(timeToNextBigFight < _2min){
+                if(timeToNextBigFight < _9min){
                     var time = getSleepTimeDuringBigFight();
                     await sleep(time, true);
                 }
@@ -371,6 +382,7 @@ async function main(toNextFight) {
                 var wasQuest = getQuestStatus();
                 if(!wasQuest){ // ### quest))) ###
                     // #1 forest, #2 cave, #3 again forest
+                    var quests = getQuest();
                     for(var q = 0; q < quests.length; q++){
                         var btnQuests = findBtnByText(getCurrentButtons(), textQuests);
                         checkAndClickBtn(btnQuests, 'quests button');
@@ -409,6 +421,10 @@ async function main(toNextFight) {
                 continue mainLoop;
             }
 
+            if(!isArenaWorking()) {
+                await sleep(getTimeToNexBigFight(), true);
+                continue mainLoop;
+            }
             //goToArena
             if(isBigFightTime()){ // global check before going to arena
                 log('big fight is about to start. Time to sleep');
@@ -427,7 +443,7 @@ async function main(toNextFight) {
             await sleep(_20sec, true);
 
             //##############################################################
-            if(isReachedLimitArena()){
+            if(isReachedLimitArena() && btnArena){
                 console.log('isReachedLimitArena');
                 //click back
 
