@@ -373,7 +373,7 @@ async function main(toNextFight) {
             //################################################################################
 
             // if(!isArenaWorking()){
-            if(isAllowedDayQuest){
+            if(isAllowedDayQuest || !isArenaWorking()){
                 var timeToNextBigFight = getTimeToNexBigFight();
                 if(timeToNextBigFight < _9min){
                     var time = getSleepTimeDuringBigFight();
