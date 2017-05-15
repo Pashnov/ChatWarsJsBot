@@ -439,9 +439,9 @@ async function main(toNextFight) {
                     }
 
                 }
-                timeToNextBigFight = getTimeToNexBigFight();
-                await sleep(timeToNextBigFight, true);
-                continue mainLoop;
+                // timeToNextBigFight = getTimeToNexBigFight();
+                // await sleep(timeToNextBigFight, true);
+                // continue mainLoop;
             }
 
             if(!isArenaWorking() && isDayLimitArena()) {
