@@ -118,6 +118,20 @@ function findBtnByText(arr, text){
     return false;
 }
 
+var dayLimit = {};
+
+function setDayLimitArena() {
+    var current = new Date();
+    var day =  Number(current.getDate());
+    dayLimit[day] = true;
+}
+
+function isDayLimitArena() {
+    var current = new Date();
+    var day =  Number(current.getDate());
+    return dayLimit[day]
+}
+
 function isFight(arr) {
     // log('called #isFight');
     var result = isFightInner(arr);
@@ -163,8 +177,8 @@ function getTimeToNexBigFight() {
     var current = new Date();
     var hour = Number(current.getHours());
     var minute = Number(current.getMinutes());
-    if(hour >= 8){
-        return _1hour;
+    if(hour == 8){
+        return (62 - minute) * 60 * 1000;
     }
     for(var i = 0; (i < hours.length - 1); i++){
         if(hour >= hours[i] && hours[i+1] > hour){
@@ -224,7 +238,11 @@ function isReachedLimitArena() {
         text = base.find(lastMessageTextSelector)[0].innerText;
         re = new RegExp('Поединков сегодня (\\d+) из (\\d+)');
         res = re.exec(text);
-        return !(Number(res[1]) < Number(res[2]));
+        var result =  !(Number(res[1]) < Number(res[2]));
+        if(result){
+            setDayLimitArena()
+        }
+        return result;
     } catch (e){
         log('isReachedLimitArena#text = ', text);
         console.error(e.stack);
@@ -234,7 +252,11 @@ function isReachedLimitArena() {
             text = base.find(lastMessageTextSelector)[0].innerText;
             re = new RegExp('Поединков сегодня (\\d+) из (\\d+)');
             res = re.exec(text);
-            return !(Number(res[1]) < Number(res[2]));
+            var result =  !(Number(res[1]) < Number(res[2]));
+            if(result){
+                setDayLimitArena()
+            }
+            return result;
         } catch (e){
             log('isReachedLimitArena#text2 = ', text);
             console.error(e.stack);
@@ -422,7 +444,7 @@ async function main(toNextFight) {
                 continue mainLoop;
             }
 
-            if(!isArenaWorking()) {
+            if(!isArenaWorking() && isDayLimitArena()) {
                 await sleep(getTimeToNexBigFight(), true);
                 continue mainLoop;
             }
